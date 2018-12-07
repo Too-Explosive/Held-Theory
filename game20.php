@@ -4,19 +4,17 @@
 	$result = mysqli_query($link, "SELECT * FROM games WHERE Player1 IS NOT NULL AND Value=20 AND Player2 IS NULL");
 	if ($result->num_rows == 0)
 	{
-		mysqli_query($link, "INSERT INTO games(Value, Player1) VALUES (20, " . $_SESSION["user"] . ")");
-		/*$result = mysqli_query($link, "SELECT * FROM games WHERE Player1=\"" . $_SESSION["user"] . "\"");
-		while($result->num_rows == 0)
-		{
-			$result = mysqli_query($link, "SELECT * FROM games WHERE Player1=\"" . $_SESSION["user"] . "\"");
-		}
-		header("Location: /Websites/playingGame20.php");*/
+		mysqli_query($link, "INSERT INTO games(Value, Player1) VALUES(20, \"" . $_SESSION["user"] . "\")");
+		$result = mysqli_query($link, "SELECT * FROM games WHERE Player1=\"" . $_SESSION["user"] . "\" AND Player2 IS NULL");
+		$row = $result->fetch_row();
+		$_SESSION["gameid"] = $row[5];
+		header("Location: /Websites/waiting.php");
 	}
 	else
 	{
 		$row = $result->fetch_row();
-		mysqli_query($link, "UPDATE games SET Player2=\"" . $_SESSION["user"] . "\" WHERE Player1=\"" . $row[3] . "\"");
+		$_SESSION["gameid"] = $row[5];
+		mysqli_query($link, "UPDATE games SET Player2=\"" . $_SESSION["user"] . "\" WHERE ID=" . $row[5]);
 		header("Location: /Websites/playingGame20.php");
 	}
-	echo "INSERT INTO games(Value, Player1) VALUES (20, \"" . $_SESSION["user"] . "\")";
 ?>
