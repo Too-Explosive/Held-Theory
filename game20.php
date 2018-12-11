@@ -15,6 +15,6 @@
 		$row = $result->fetch_row();
 		$_SESSION["gameid"] = $row[5];
 		mysqli_query($link, "UPDATE games SET Player2=\"" . $_SESSION["user"] . "\" WHERE ID=" . $row[5]);
-		header("Location: /Websites/playingGame20.php");
+		header("Location: /Websites/playingGame20.php?chat=&choice=nun&msg=seven");
 	}
 ?>
