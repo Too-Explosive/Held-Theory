@@ -2,7 +2,7 @@
 	session_start();
 	ini_set("max_execution_time", 30);
 	$link = mysqli_connect("35.238.173.9", "root", "chUdR5Tr", "microecon");
-	$query = "SELECT User, Game1, Game2, Game3, Game4, Game5, Points FROM players WHERE User=\"" . $_POST["username"] . "\" AND Hash=\"" . hash("sha256", $_POST["password"]) . "\"";
+	$query = "SELECT User, Points FROM players WHERE User=\"" . $_POST["username"] . "\" AND Hash=\"" . hash("sha256", $_POST["password"]) . "\"";
 	$result = mysqli_query($link, $query);
 	if ($result->num_rows == 1)
 	{
