@@ -110,6 +110,14 @@
 				{
 					choice = "fail";
 				}
+				if (document.getElementById("stl").checked)
+				{
+					choice = "steal";
+				}
+				if (document.getElementById("spl").checked)
+				{
+					choice = "split";
+				}
 				if (player1 && playerChecked)
 				{
 					eh = "Player1Checked=1&choice=" + choice;
