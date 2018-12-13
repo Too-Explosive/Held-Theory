@@ -21,17 +21,21 @@
 		$beh = mysqli_fetch_array($result);
 		$arr = array("Player2" => $beh["Player1"]);
 	}
-	$result1 = mysqli_query($link, "SELECT Result FROM games WHERE Player1=\"" . $arr["Player2"] . "\"");
+	$result1 = mysqli_query($link, "SELECT Player1Choice FROM games WHERE Player1=\"" . $arr["Player2"] . "\"");
 	$steal = 0;
 	$splits = 0;
 	$rows = [];
+	if (!$result1)
+	{
+		printf("Error: %s\n", mysqli_error($link));
+	}
 	while ($row = mysqli_fetch_array($result1))
 	{
 		$rows[] = $row;
 	}
 	foreach ($rows as $eh)
 	{
-		if ($eh["Result"] == 1 or $eh["Result"] == 2)
+		if ($eh["Player1Choice"] == 1)
 		{
 			$splits = $splits + 1;
 		}
@@ -41,14 +45,14 @@
 		}
 	}
 	$rows = [];
-	$result1 = mysqli_query($link, "SELECT Result FROM games WHERE Player2=\"" . $arr["Player2"] . "\"");
+	$result1 = mysqli_query($link, "SELECT Player2Choice FROM games WHERE Player2=\"" . $arr["Player2"] . "\"");
 	while ($row = mysqli_fetch_array($result1))
 	{
 		$rows[] = $row;
 	}
 	foreach ($rows as $eh)
 	{
-		if ($eh["Result"] == 1 or $eh["Result"] == 3)
+		if ($eh["Player2Choice"] == 1)
 		{
 			$splits = $splits + 1;
 		}
@@ -70,16 +74,16 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>20 Points!</title>
+		<title>100 Points!</title>
 		<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
 	</head>
 	<body>
 		<p id="stole"></p>
 		<p id="split"></p>
 		<div style="position:absolute;top:50%;left:50%;">
+			<h1 id="time"></h1><br>
 			<input id="stl" type="checkbox" style="width:5em;">STEAL</input><br>
 			<input id="spl" type="checkbox" style="width:5em;">SPLIT</input><br>
-			<button id="subchoice" style="width:11em;">Submit</button><br><br>
 		</div>
 		<p id="chat" style="text-align:left;margin-bottom:25px;padding:10px;background:#fff;height:30em;width:20em;border:1em solid #ACD8F0;overflow:auto;">
 			<?php
@@ -91,14 +95,68 @@
 		<button style="width:11em;" id="chk">Check Opponent History</button>
 	</body>
 	<script>
+		var time = <?php echo (int)$_GET["time"] ?>;
+		document.getElementById("time").innerHTML = time;
+		var tick = setInterval(alot, 1000);
+		var inteh = setInterval(updateChat, 3500);
+		function alot()
+		{
+			if (time <= 0)
+			{
+				clearInterval(tick);
+				clearInterval(inteh);
+				var eh;
+				if (choice != "steal" || choice != "split")
+				{
+					choice = "fail";
+				}
+				if (player1 && playerChecked)
+				{
+					eh = "Player1Checked=1&choice=" + choice;
+				}
+				else if (player1)
+				{
+					eh = "Player1Checked=0&choice=" + choice;
+				}
+				else if (playerChecked)
+				{
+					eh = "Player2Checked=1&choice=" + choice;
+				}
+				else
+				{
+					eh = "Player2Checked=0&choice=" + choice;
+				}
+				window.location.href = "/Websites/Result20.php?" + eh;
+			}
+			else
+			{
+				time = time - 1;
+				document.getElementById("time").innerHTML = time;
+			}
+		}
 		$("#submit").click(function(){
-			window.location.href = "/Websites/playingGame20.php?chat=" + document.getElementById("fek").value + "&msg=seven&choice=" + choice;
+			window.location.href = "/Websites/playingGame20.php?chat=" + document.getElementById("fek").value + "&msg=seven&choice=" + choice + "&time=" + time;
 		});
 		function updateChat()
 		{
-			window.location.href = "/Websites/playingGame20.php?chat=&msg=" + document.getElementById("fek").value + "&choice=" + choice;
+			if (time <= 0)
+			{
+				alot();
+			}
+			else
+			{
+				var thing;
+				if (playerChecked)
+				{
+					thing = "&check=true";
+				}
+				else
+				{
+					thing = "&check=false";
+				}
+				window.location.href = "/Websites/playingGame20.php?chat=&msg=" + document.getElementById("fek").value + "&choice=" + choice + "&time=" + time + thing;
+			}
 		}
-		var interval = setInterval(updateChat, 3500);
 		var playerChecked = false;
 		if (<?php echo json_encode($_GET["msg"]) ?> != "seven")
 		{
@@ -118,7 +176,7 @@
 		}
 		var player1 = <?php echo json_encode($_SESSION["player1"]) ?>;
 		$("#chk").click(function(){
-			if (<?php echo $r[2] ?> >= 5)
+			if (<?php echo $r[2] ?> >= 75)
 			{
 				document.getElementById("stole").innerHTML = "Games stole: " + "<?php echo $steal ?>";
 				document.getElementById("split").innerHTML = "Games split: " + "<?php echo $splits ?>";
@@ -129,6 +187,11 @@
 				document.getElementById("stole").innerHTML = "Not enough points.";
 			}
 		});
+		if (<?php echo json_encode($_GET["check"]) ?> == "true")
+		{
+			document.getElementById("stole").innerHTML = "Games stole: " + "<?php echo $steal ?>";
+			document.getElementById("split").innerHTML = "Games split: " + "<?php echo $splits ?>";
+		}
 		$("#stl").click(function(){
 			choice = "steal";
 			document.getElementById("spl").checked = false;
@@ -138,26 +201,6 @@
 			choice = "split";
 			document.getElementById("stl").checked = false;
 			document.getElementById("spl").checked = true;
-		});
-		$("#subchoice").click(function(){
-			var eh;
-			if (player1 && playerChecked)
-			{
-				eh = "Player1Checked=1&choice=" + choice;
-			}
-			else if (player1)
-			{
-				eh = "Player1Checked=0&choice=" + choice;
-			}
-			else if (playerChecked)
-			{
-				eh = "Player2Checked=1&choice=" + choice;
-			}
-			else
-			{
-				eh = "Player2Checked=0&choice=" + choice;
-			}
-			window.location.href = "/Websites/Result20.php?" + eh;
 		});
 	</script>
 </html>
