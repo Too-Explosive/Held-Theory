@@ -2,7 +2,6 @@
 	session_start();
 	$link = mysqli_connect("35.238.173.9", "root", "chUdR5Tr", "microecon");
 	$dumb = false;
-	echo $_GET["choice"];
 	if ($_GET["choice"] == "fail" or $_GET["choice"] == "nun")
 	{
 		$newp = $_SESSION["points"] - 50;
@@ -48,12 +47,12 @@
 		}
 	}
 	Sleep(3);
-	/*if ($dumb)
+	if ($dumb)
 	{
 		header("Location: /Websites/end.php?dumb=true");
 	}
 	else
 	{
 		header("Location: /Websites/end.php?dumb=false");
-	}*/
+	}
 ?>
