@@ -9,6 +9,6 @@
 	}
 	else
 	{
-		header("Location: /Websites/playingGame20.php?chat=&choice=nun&msg=seven");
+		header("Location: /Websites/playingGame20.php?chat=&choice=nun&msg=seven&time=15&check=false");
 	}
 ?>
