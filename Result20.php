@@ -19,7 +19,7 @@
 		if ($_GET["Player1Checked"] == 1)
 		{
 			mysqli_query($link, "UPDATE games SET Player1Checked = 1 WHERE ID = " . $_SESSION["gameid"]);
-			mysqli_query($link, "UPDATE players SET Points = " . strval($_SESSION["points"] - 5) . " WHERE User=\"" . $_SESSION["user"] . "\"");
+			mysqli_query($link, "UPDATE players SET Points = " . strval($_SESSION["points"] - 100) . " WHERE User=\"" . $_SESSION["user"] . "\"");
 		}
 		if ($_GET["choice"] == "steal")
 		{
@@ -35,6 +35,7 @@
 		if ($_GET["Player2Checked"] == 1)
 		{
 			mysqli_query($link, "UPDATE games SET Player2Checked = 1 WHERE ID = " . $_SESSION["gameid"]);
+			mysqli_query($link, "UPDATE players SET Points = " . strval($_SESSION["points"] - 75) . " WHERE User=\"" . $_SESSION["user"] . "\"");
 		}
 		if ($_GET["choice"] == "steal")
 		{
@@ -46,7 +47,7 @@
 		}
 	}
 	Sleep(3);
-  if ($dumb)
+	if ($dumb)
 	{
 		header("Location: /Websites/end.php?dumb=true");
 	}
