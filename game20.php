@@ -1,10 +1,10 @@
 <?php
 	session_start();
 	$link = mysqli_connect("35.238.173.9", "root", "chUdR5Tr", "microecon");
-	$result = mysqli_query($link, "SELECT * FROM games WHERE Player1 IS NOT NULL AND Value=20 AND Player2 IS NULL");
+	$result = mysqli_query($link, "SELECT * FROM games WHERE Player1 IS NOT NULL AND Value=100 AND Player2 IS NULL");
 	if ($result->num_rows == 0)
 	{
-		mysqli_query($link, "INSERT INTO games(Value, Player1) VALUES(20, \"" . $_SESSION["user"] . "\")");
+		mysqli_query($link, "INSERT INTO games(Value, Player1) VALUES(100, \"" . $_SESSION["user"] . "\")");
 		$result = mysqli_query($link, "SELECT * FROM games WHERE Player1=\"" . $_SESSION["user"] . "\" AND Player2 IS NULL");
 		$row = $result->fetch_row();
 		$_SESSION["gameid"] = $row[5];
@@ -15,6 +15,6 @@
 		$row = $result->fetch_row();
 		$_SESSION["gameid"] = $row[5];
 		mysqli_query($link, "UPDATE games SET Player2=\"" . $_SESSION["user"] . "\" WHERE ID=" . $row[5]);
-		header("Location: /Websites/playingGame20.php?chat=&choice=nun&msg=seven");
+		header("Location: /Websites/playingGame20.php?chat=&choice=nun&msg=seven&time=15&check=false");
 	}
 ?>
